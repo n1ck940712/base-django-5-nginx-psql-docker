@@ -1,0 +1,38 @@
+services:
+  api:
+    # image: 3.11-alpine3.19
+    container_name: api
+    build:
+      context: ./../../
+      dockerfile: ./build/docker/Dockerfile.api
+    ports:
+      - 8000:8000
+    volumes:
+      - ./../../:/srv/project-test/
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: main
+  postgres:
+    container_name: postgres
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./../data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: main
+      # POSTGRES_REP_USER: postgres_rep
+      # POSTGRES_REP_PASSWORD: 123456
+  nginx:
+    container_name: nginx
+    restart: always
+    image: nginx:1.15
+    ports:
+      - 80:80
+    volumes:
+      - ./../nginx-conf.d:/etc/nginx/conf.d/
